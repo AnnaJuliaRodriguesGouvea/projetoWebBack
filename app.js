@@ -12,6 +12,7 @@ app.use(express.static(path.join(__dirname, 'public')))
 
 //Definindo rotas
 app.use("/install", require('./control/install'))
+app.use("/", require("./control/autenticacao-controller"))
 app.use("/api/usuario", require('./control/usuario-controller'))
 
 app.listen(3000, () => {

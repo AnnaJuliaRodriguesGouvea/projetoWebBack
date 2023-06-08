@@ -68,4 +68,19 @@ module.exports = {
         return next()
     },
 
+    validaAdmin: function(req, res, next) {
+        const {error, value} = Joi.boolean().required().validate(req.body.admin)
+        if(error) {
+            return res.status(400).json({status: false, msg: "Admin não pode ser nula"})
+        }
+        req.body.admin = value
+        return next()
+    },
+
+    validaIsAdmin: async function(req, res, next) {
+        if (await usuarioService.isAdmin(req.cpfLogado))
+            next()
+        else
+            res.status(403).json({status: false, msg: "Usuário logado não é um administrador"})
+    },
 }
