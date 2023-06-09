@@ -5,6 +5,7 @@ const usuarioDAO = require("../DAO/usuario-dao")
 const temaDAO = require("../DAO/tema-dao")
 const perguntaDAO = require("../DAO/pergunta-dao")
 const respostaDAO = require("../DAO/resposta-dao")
+const relacaoQnADAO = require("../DAO/relacao-qna-dao")
 
 async function inicializarUsuarioModel() {
     let usuarios = [
@@ -79,6 +80,30 @@ async function inicializarPerguntaModel() {
     return perguntasModel
 }
 
+async function inicializarRelacaoQnAModel() {
+    let relacaoCorreta = [
+        [1, 1],
+        [2, 2],
+        [3, 4],
+        [4, 5],
+        [5, 3]
+    ]
+
+    let relacaoModel = []
+    for (let i = 0; i < relacaoCorreta.length; i++) {
+        const idRespCorreta = relacaoCorreta[i][1]
+        const respostas = await respostaDAO.listarTudo()
+        for (let j = 0; j < respostas.length; j++) {
+            if (respostas[j].id == idRespCorreta) {
+                relacaoModel.push(await relacaoQnADAO.inserir(relacaoCorreta[i][0], respostas[j].id, true))
+            } else {
+                relacaoModel.push(await relacaoQnADAO.inserir(relacaoCorreta[i][0], respostas[j].id, false))
+            }
+        }
+    }
+    return relacaoModel
+}
+
 router.get('/', async (req, res) => {
     await sequelize.sync({force: true})
 
@@ -86,6 +111,7 @@ router.get('/', async (req, res) => {
     const temas = await inicializarTemaModel()
     const respostas = await inicializarRespostaModel()
     const perguntas = await inicializarPerguntaModel()
+    const relacaoQnA = await inicializarRelacaoQnAModel()
 
     res.json({
         status: true, 
@@ -93,7 +119,8 @@ router.get('/', async (req, res) => {
         usuarios: usuarios,
         temas: temas,
         perguntas: perguntas,
-        respostas: respostas
+        respostas: respostas,
+        relacaoQnA: relacaoQnA
     })
 })
 

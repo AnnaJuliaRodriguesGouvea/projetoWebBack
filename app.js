@@ -17,6 +17,7 @@ app.use("/api/usuario", require('./control/usuario-controller'))
 app.use("/api/pergunta", require("./control/pergunta-controller"))
 app.use("/api/resposta", require("./control/resposta-controller"))
 app.use("/api/tema", require("./control/tema-controller"))
+app.use("/api/relacao-qna", require("./control/relacao-qna-controller"))
 
 app.listen(3000, () => {
     console.log("Rodando na porta 3000")
