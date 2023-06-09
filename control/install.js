@@ -3,6 +3,8 @@ const router = express.Router()
 const sequelize = require("../helpers/bd-config")
 const usuarioDAO = require("../DAO/usuario-dao")
 const temaDAO = require("../DAO/tema-dao")
+const perguntaDAO = require("../DAO/pergunta-dao")
+const respostaDAO = require("../DAO/resposta-dao")
 
 async function inicializarUsuarioModel() {
     let usuarios = [
@@ -41,17 +43,57 @@ async function inicializarTemaModel() {
     return temasModel
 }
 
+async function inicializarRespostaModel() {
+    let respostas = [
+        "A maldição de frankenstein",
+        "A Nightmare on Elm Street",
+        "Psicose",
+        "Los Angeles",
+        "New York",
+        "Chicago"
+    ]
+
+    let respostasModel = []
+    for (let i = 0; i < respostas.length; i++) {
+        respostasModel.push(await respostaDAO.inserir(respostas[i]))
+    }
+
+    return respostasModel
+}
+
+async function inicializarPerguntaModel() {
+    let pergunta = [
+        ["Qual foi o primeiro filme de terror em cores?", 3, "Filme"],
+        ["Qual filme de terror foi a estreia de Johnny Depp? ", 2, "Filme"],
+        ["'Pretty Woman' se passa em qual cidade?", 1, "Cidade"],
+        ["Que cidade é invadida por fantasmas em 'Ghostbusters'?", 1, "Cidade"],
+        ["Qual foi o primeiro filme a mostrar uma descarga em um vaso sanitário?", 3, "Filme"]
+    ]
+
+    let perguntasModel = []
+    for (let i = 0; i < pergunta.length; i++) {
+        let temaModel = await temaDAO.getByTema(pergunta[i][2].toLowerCase())
+        perguntasModel.push(await perguntaDAO.inserir(pergunta[i][0], pergunta[i][1], temaModel.id))
+    }
+
+    return perguntasModel
+}
+
 router.get('/', async (req, res) => {
     await sequelize.sync({force: true})
 
     const usuarios = await inicializarUsuarioModel()
     const temas = await inicializarTemaModel()
+    const respostas = await inicializarRespostaModel()
+    const perguntas = await inicializarPerguntaModel()
 
     res.json({
         status: true, 
         usuarioAdmDefault: usuarios[0],
         usuarios: usuarios,
-        temas: temas
+        temas: temas,
+        perguntas: perguntas,
+        respostas: respostas
     })
 })
 

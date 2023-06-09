@@ -14,6 +14,8 @@ app.use(express.static(path.join(__dirname, 'public')))
 app.use("/install", require('./control/install'))
 app.use("/", require("./control/autenticacao-controller"))
 app.use("/api/usuario", require('./control/usuario-controller'))
+app.use("/api/pergunta", require("./control/pergunta-controller"))
+app.use("/api/resposta", require("./control/resposta-controller"))
 app.use("/api/tema", require("./control/tema-controller"))
 
 app.listen(3000, () => {
