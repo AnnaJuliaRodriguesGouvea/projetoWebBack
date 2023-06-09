@@ -2,7 +2,7 @@ const express = require("express")
 const router = express.Router()
 const sequelize = require("../helpers/bd-config")
 const usuarioDAO = require("../DAO/usuario-dao")
-
+const temaDAO = require("../DAO/tema-dao")
 
 async function inicializarUsuarioModel() {
     let usuarios = [
@@ -28,15 +28,30 @@ async function inicializarUsuarioModel() {
     return usuariosModel
 }
 
+async function inicializarTemaModel() {
+    let temas = [
+        "Filme", "Ator", "Cidade", "Cor", "Ano"
+    ]
+
+    let temasModel = []
+    for (let i = 0; i < temas.length; i++) {
+        temasModel.push(await temaDAO.inserir(temas[i].toLowerCase()))
+    }
+
+    return temasModel
+}
+
 router.get('/', async (req, res) => {
     await sequelize.sync({force: true})
 
     const usuarios = await inicializarUsuarioModel()
+    const temas = await inicializarTemaModel()
 
     res.json({
         status: true, 
         usuarioAdmDefault: usuarios[0],
-        usuarios: usuarios
+        usuarios: usuarios,
+        temas: temas
     })
 })
 
