@@ -6,6 +6,7 @@ const temaDAO = require("../DAO/tema-dao")
 const perguntaDAO = require("../DAO/pergunta-dao")
 const respostaDAO = require("../DAO/resposta-dao")
 const relacaoQnADAO = require("../DAO/relacao-qna-dao")
+const pontuacaoDAO = require("../DAO/pontuacao-dao")
 
 async function inicializarUsuarioModel() {
     let usuarios = [
@@ -104,6 +105,23 @@ async function inicializarRelacaoQnAModel() {
     return relacaoModel
 }
 
+async function inicializarPontuacaoModel() {
+    let pontuacao = [
+        [50, "11122233344"],
+        [10, "12345678910"],
+        [30, "12213314455"],
+        [20, "55566677788"],
+        [40, "45678912300"]
+    ]
+
+    let pontuacaoModel = []
+    for (let i = 0; i < pontuacao.length; i++) {
+        pontuacaoModel.push(await pontuacaoDAO.inserir(pontuacao[i][0], pontuacao[i][1]))
+    }
+
+    return pontuacaoModel
+}
+
 router.get('/', async (req, res) => {
     await sequelize.sync({force: true})
 
@@ -112,6 +130,7 @@ router.get('/', async (req, res) => {
     const respostas = await inicializarRespostaModel()
     const perguntas = await inicializarPerguntaModel()
     const relacaoQnA = await inicializarRelacaoQnAModel()
+    const pontuacoes = await inicializarPontuacaoModel()
 
     res.json({
         status: true, 
@@ -120,7 +139,8 @@ router.get('/', async (req, res) => {
         temas: temas,
         perguntas: perguntas,
         respostas: respostas,
-        relacaoQnA: relacaoQnA
+        relacaoQnA: relacaoQnA,
+        pontuacoes: pontuacoes
     })
 })
 
