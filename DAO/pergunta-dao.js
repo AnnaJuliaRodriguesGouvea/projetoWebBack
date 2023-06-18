@@ -38,4 +38,8 @@ module.exports = {
     getById: async function(id) {
         return await PerguntaModel.findByPk(id)
     },
+
+    getByNivel: async function(nivel) {
+        return await PerguntaModel.findAll({where: {nivel: nivel}})
+    }
 }

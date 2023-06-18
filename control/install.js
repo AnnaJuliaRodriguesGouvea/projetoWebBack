@@ -47,12 +47,11 @@ async function inicializarTemaModel() {
 
 async function inicializarRespostaModel() {
     let respostas = [
-        "A maldição de frankenstein",
-        "A Nightmare on Elm Street",
-        "Psicose",
-        "Los Angeles",
-        "New York",
-        "Chicago"
+        "Expecto Patronum", "Avada Kedavra", "Expelliarmus",
+        "2014", "2022", "2023", 
+        "2019", "2018", "2017",
+        "Star Wars: A Ameaça Fantasma", "Star Wars: Uma Nova Esperança", "Star Wars: O Império Contra-Ataca",
+        "Homem de Ferro", "Capitão América: O Primeiro Vingador", "Thor"
     ]
 
     let respostasModel = []
@@ -65,11 +64,11 @@ async function inicializarRespostaModel() {
 
 async function inicializarPerguntaModel() {
     let pergunta = [
-        ["Qual foi o primeiro filme de terror em cores?", 3, "Filme"],
-        ["Qual filme de terror foi a estreia de Johnny Depp? ", 2, "Filme"],
-        ["'Pretty Woman' se passa em qual cidade?", 1, "Cidade"],
-        ["Que cidade é invadida por fantasmas em 'Ghostbusters'?", 1, "Cidade"],
-        ["Qual foi o primeiro filme a mostrar uma descarga em um vaso sanitário?", 3, "Filme"]
+        ["Qual feitiço para desarmar o seu oponente, em Harry Potter?", 2, "Filme"],
+        ["Quando foi lançado o filme Avatar 2?", 1, "Ano"],
+        ["Quando foi lançado o filme Vingadores Ultimato?", 1, "Ano"],
+        ["Qual o primeiro filme da franquia Star Wars?", 2, "Filme"],
+        ["Qual o primeiro filme do Universo Cinematográfico Marvel(MCU)?", 2, "Filme"]
     ]
 
     let perguntasModel = []
@@ -83,40 +82,32 @@ async function inicializarPerguntaModel() {
 
 async function inicializarRelacaoQnAModel() {
     let relacaoCorreta = [
-        [1, 1],
-        [2, 2],
-        [3, 4],
-        [4, 5],
-        [5, 3]
+        [1, 1, false], [1, 2, false], [1, 3, true],
+        [2, 4, false], [2, 5, true], [2, 6, false],
+        [3, 7, true], [3, 8, false], [3, 9, false],
+        [4, 10, false], [4, 11, true], [4, 12, false],
+        [5, 13, true], [5, 14, false], [5, 15, false]
     ]
 
     let relacaoModel = []
     for (let i = 0; i < relacaoCorreta.length; i++) {
-        const idRespCorreta = relacaoCorreta[i][1]
-        const respostas = await respostaDAO.listarTudo()
-        for (let j = 0; j < respostas.length; j++) {
-            if (respostas[j].id == idRespCorreta) {
-                relacaoModel.push(await relacaoQnADAO.inserir(relacaoCorreta[i][0], respostas[j].id, true))
-            } else {
-                relacaoModel.push(await relacaoQnADAO.inserir(relacaoCorreta[i][0], respostas[j].id, false))
-            }
-        }
+        relacaoModel.push(await relacaoQnADAO.inserir(relacaoCorreta[i][0], relacaoCorreta[i][1], relacaoCorreta[i][2]))
     }
     return relacaoModel
 }
 
 async function inicializarPontuacaoModel() {
     let pontuacao = [
-        [50, "11122233344"],
-        [10, "12345678910"],
-        [30, "12213314455"],
-        [20, "55566677788"],
-        [40, "45678912300"]
+        [90, 3, 3, "11122233344"],
+        [10, 3, 1, "12345678910"],
+        [30, 3, 1, "12213314455"],
+        [20, 3, 2, "55566677788"],
+        [40, 3, 2, "45678912300"]
     ]
 
     let pontuacaoModel = []
     for (let i = 0; i < pontuacao.length; i++) {
-        pontuacaoModel.push(await pontuacaoDAO.inserir(pontuacao[i][0], pontuacao[i][1]))
+        pontuacaoModel.push(await pontuacaoDAO.inserir(pontuacao[i][0], pontuacao[i][1], pontuacao[i][2], pontuacao[i][3]))
     }
 
     return pontuacaoModel

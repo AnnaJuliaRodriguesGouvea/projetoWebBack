@@ -12,7 +12,7 @@ module.exports = {
         
         const {error, value} = Joi.number().integer().greater(0).required().validate(id_resposta)
         if(error) {
-            return res.status(400).json({status: false, msg: "O id da resposta não pode ser nulo"})
+            return res.status(400).json({status: false, msg: "O id da resposta não pode ser nulo e/ou deve ser um número inteiro"})
         }
 
         req.body.id_resposta = value

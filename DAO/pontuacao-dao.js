@@ -1,3 +1,4 @@
+const { Op } = require("sequelize")
 const PontuacaoModel = require("../model/Pontuacao.js")
 
 module.exports = {
@@ -9,19 +10,23 @@ module.exports = {
         return pontuacoes
     },
     
-    inserir: async function(pontuacao, cpf) {
+    inserir: async function(pontuacao, perguntasRespondidas, nivel, cpf) {
         const novaPontuacao = await PontuacaoModel.create({
             pontuacao: pontuacao,
+            perguntasRespondidas: perguntasRespondidas,
+            nivel: nivel,
             cpf: cpf
         })
         
         return novaPontuacao
     },
 
-    atualizar: async function(id, pontuacao, cpf) {
+    atualizar: async function(id, pontuacao, perguntasRespondidas, nivel, cpf) {
         return await PontuacaoModel.update(
             {
                 pontuacao: pontuacao,
+                perguntasRespondidas: perguntasRespondidas,
+                nivel: nivel,
                 cpf: cpf
             }, {
                 where: { id: id }
@@ -44,4 +49,24 @@ module.exports = {
             where: {cpf: cpf}
         })
     },
+
+    existeJogoEmAndamento: async function(cpf) {
+        return await PontuacaoModel.findOne({ 
+            where: {
+                [Op.and]: [
+                    { cpf: cpf },
+                    { perguntasRespondidas: { [Op.lt]: 3 } }
+                ]
+            }
+        })
+    },
+
+    getUltimaPontuacao: async function(cpf) {
+        return await PontuacaoModel.findOne({
+            where: {
+                cpf: cpf
+            },
+            order: [['id', 'DESC']]
+        })
+    }
 }

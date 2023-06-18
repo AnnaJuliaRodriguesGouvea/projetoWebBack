@@ -35,10 +35,10 @@ module.exports = {
         return {status: 404, data: "Não existe pontuações com esse cpf"}
     },
 
-    cadastrarPontuacao: async function(cpfLogado, pontuacao, cpf) {
+    cadastrarPontuacao: async function(cpfLogado, pontuacao, perguntasRespondidas, nivel, cpf) {
         if(await usuarioService.isAdmin(cpfLogado)) {
             if(await usuarioService.existeCPF(cpf)) {
-                const novaPontuacao = await pontuacaoDAO.inserir(pontuacao, cpf)
+                const novaPontuacao = await pontuacaoDAO.inserir(pontuacao, perguntasRespondidas, nivel, cpf)
                 if (novaPontuacao) {
                     return {status: 201, data: novaPontuacao}
                 }
@@ -49,11 +49,11 @@ module.exports = {
         return {status: 403, data: "Você não possui permissão para cadastrar pontuações, apenas administradores"}
     },
 
-    atualizarPontuacao: async function(cpfLogado, id, pontuacao, cpf) {
+    atualizarPontuacao: async function(cpfLogado, id, pontuacao, perguntasRespondidas, nivel, cpf) {
         if(await usuarioService.isAdmin(cpfLogado)) {
             if (await this.existeId(id)) {
                 if(await usuarioService.existeCPF(cpf)) {
-                    const [response] = await pontuacaoDAO.atualizar(id, pontuacao, cpf)
+                    const [response] = await pontuacaoDAO.atualizar(id, pontuacao, perguntasRespondidas, nivel, cpf)
                     if (response) {
                         return {status: 201, data: response}
                     }

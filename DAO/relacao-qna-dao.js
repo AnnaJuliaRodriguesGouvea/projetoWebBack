@@ -1,5 +1,7 @@
 const { Op } = require("sequelize")
 const RelacaoQnAModel = require("../model/RelacaoQnA")
+const PerguntaModel = require("../model/Pergunta.js")
+const RespostaModel = require("../model/Resposta.js")
 
 module.exports = {
     listar: async function(limite, pagina) {
@@ -61,6 +63,22 @@ module.exports = {
                 id_pergunta: id_pergunta,
                 resposta_certa: true
             }
+        })
+    },
+
+    getRelacao: async function(perguntas) {
+        return await RelacaoQnAModel.findAll({
+            include: [{
+                model: PerguntaModel,
+                required: true,
+                attributes: ["questao", "nivel", "id_tema"],
+            }, {
+                model: RespostaModel,
+                attributes: ["resposta"],
+                required: true
+            }],
+            attributes: ["id_pergunta", "id_resposta"],
+            where: { id_pergunta: { [Op.in]: perguntas } }
         })
     }
 }

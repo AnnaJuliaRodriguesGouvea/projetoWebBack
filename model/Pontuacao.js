@@ -13,6 +13,14 @@ const PontuacaoModel = sequelize.define('Pontuacao',
         pontuacao: {
             type: DataTypes.INTEGER,
             allowNull: false
+        },
+        perguntasRespondidas: {
+            type: DataTypes.INTEGER,
+            allowNull: false
+        },
+        nivel: {
+            type: DataTypes.INTEGER,
+            allowNull: false
         }
     }
 )

@@ -5,6 +5,7 @@ const qnaValidator = require("../validator/qna-validator")
 const autenticacaoValidator = require("../validator/autenticacao-validator")
 const pontuacaoValidator = require("../validator/pontuacao-validator")
 const usuarioValidator = require("../validator/usuario-validator")
+const perguntaValidator = require("../validator/pergunta-validator")
 
 router.get("/",
     autenticacaoValidator.validarToken,
@@ -36,9 +37,17 @@ router.get("/cpf/:cpf",
 router.post("/",
     autenticacaoValidator.validarToken,
     pontuacaoValidator.validaPontuacao,
+    pontuacaoValidator.validaPerguntasRespondidas,
+    perguntaValidator.validaNivel,
     usuarioValidator.validaCpf,
     async (req, res) => {
-        const response = await pontuacaoService.cadastrarPontuacao(req.cpfLogado, req.body.pontuacao, req.body.cpf)
+        const response = await pontuacaoService.cadastrarPontuacao(
+            req.cpfLogado, 
+            req.body.pontuacao,
+            req.body.perguntasRespondidas,
+            req.body.nivel,
+            req.body.cpf
+        )
         res.status(response.status).json(response.data)
 })
 
@@ -46,12 +55,16 @@ router.put("/:id",
     autenticacaoValidator.validarToken,
     qnaValidator.validaId,
     pontuacaoValidator.validaPontuacao,
+    pontuacaoValidator.validaPerguntasRespondidas,
+    perguntaValidator.validaNivel,
     usuarioValidator.validaCpf,
     async (req, res) => {
         const response = await pontuacaoService.atualizarPontuacao(
             req.cpfLogado,
             req.body.id,
             req.body.pontuacao,
+            req.body.perguntasRespondidas,
+            req.body.nivel,
             req.body.cpf
         )
         res.status(response.status).json(response.data)

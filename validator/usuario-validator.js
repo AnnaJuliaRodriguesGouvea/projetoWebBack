@@ -3,11 +3,6 @@ const usuarioService = require("../service/usuario-service")
 
 module.exports = {
     validaCpf: function(req, res, next) {
-        const {error, value} = Joi.string().validate(req.body.cpf)
-        if(error) {
-            return res.status(400).json({status: false, msg: "O cpf deve ser uma string"})
-        }
-
         let cpf = null
         if(req.body.cpf)
             cpf = req.body.cpf
@@ -18,8 +13,12 @@ module.exports = {
             return res.status(400).json({status: false, msg: "O cpf não pode ser nulo"})
         }
 
+        const {error, value} = Joi.string().validate(cpf)
+        if(error) {
+            return res.status(400).json({status: false, msg: "O cpf deve ser uma string"})
+        }
+
         if (cpf.length != 11) {
-            console.log(cpf)
             cpf = cpf.replaceAll(".", "")
             cpf = cpf.replaceAll("-", "")
             const {error, value} = Joi.string().length(11).required().validate(cpf)
