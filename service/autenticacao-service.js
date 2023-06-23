@@ -1,18 +1,18 @@
 var jwt = require('jsonwebtoken')
 const usuarioService = require("../service/usuario-service")
 
-async function validarLogin(email, senha) {
-    const usuario = await usuarioService.getUsuarioByEmail(email)
-    if (usuario != null)
-        return usuario.senha === senha
-    return false
-}
+// async function validarLogin(email, senha) {
+//     const usuario = await usuarioService.getUsuarioByEmail(email)
+//     if (usuario != null)
+//         return usuario.senha === senha
+//     return false
+// }
 
 module.exports = {
     login: async function(email, senha) {
-        if (await usuarioService.existeEmail(email)) {
-            if (await validarLogin(email, senha)) {
-                let usuario = await usuarioService.getUsuarioByEmail(email)
+        var usuario = await usuarioService.getUsuarioByEmail(email)
+        if (usuario != null) {
+            if (usuario.senha === senha) {
                 let token = jwt.sign({cpfLogado: usuario.cpf}, process.env.JWT_SECRET, {
                     expiresIn: '1h'
                 })
